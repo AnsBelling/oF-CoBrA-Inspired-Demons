@@ -1,0 +1,9 @@
+
+*.db
+*.ipch
+oFCoBrADemons/.vs/oFCoBrADemons/v15/.suo
+*.vcxproj
+*.filters
+*.user
+*.sln
+*.rc
