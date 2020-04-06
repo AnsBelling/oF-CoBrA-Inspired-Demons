@@ -7,3 +7,7 @@ oFCoBrADemons/.vs/oFCoBrADemons/v15/.suo
 *.user
 *.sln
 *.rc
+*.db-wal
+*.opendb
+*.db-shm
+.vs/oF-CoBrA-Inspired-Demons/v15/.suo
