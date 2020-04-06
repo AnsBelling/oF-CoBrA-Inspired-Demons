@@ -1,2 +1,2 @@
 # oF CoBrA-Inspired Demons
- - oFApp that generate CoBrA-inspired demons unto existing artworks
+ - oFApp that generates CoBrA-inspired demons unto existing artworks
