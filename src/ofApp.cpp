@@ -8,6 +8,10 @@ Acknowledgements:
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofBackground(0);
+	img.load("riverscene.jpg");
+	imgW = img.getWidth();
+	imgH = img.getHeight();
+	ofSetWindowShape(imgW, imgH);
 	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
 	/* Rubbish	//Draw a circle
 	for (int i = -30; i <= 360 + 30; i += 30) {
@@ -24,8 +28,8 @@ void ofApp::setup() {
 	centre.x = 0;
 	centre.y = 0;
 	b_sp = true;
-	range = 150;
-	change = 50;
+	range = 75;
+	change =25;
 
 	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
@@ -46,24 +50,23 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	/*//Make edges move randomly
-	for (auto &vert : body.getVertices()) {
-		vert.x += ofRandom(-0.2, 0.2);
-		vert.y += ofRandom(-0.2, 0.2);
+	for (auto &vert : line.getVertices()) {
+		vert.x += ofRandom(-1, 1);
+		vert.y += ofRandom(-1, 1);
 	}
 	//	body = body.getSmoothed(2);
 	*/
-
 	//clear the blobpoint vector
 	blobpoints.clear();
-
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 	/*//body = body.getResampledBySpacing(0.5);
 
-	eyeDot.x = body.getCentroid2D().x;
-	eyeDot.y = body.getCentroid2D().y;
+	eyeDot.x = line.getCentroid2D().x;
+	eyeDot.y = line.getCentroid2D().y;
 	float time = ofGetElapsedTimef()/4;
 	float value = sin(time * M_TWO_PI);
 	v = ofMap(value, -1, 1, 10, 20);
@@ -73,9 +76,10 @@ void ofApp::draw() {
 	body.draw();
 	*/
 
-	// A vector of all the points within 100 distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes
+	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
 
 	ofPushMatrix();
+	showImg();
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
@@ -130,36 +134,45 @@ void ofApp::draw() {
 			//blobpoints.erase(blobpoints.begin()+p);
 			demonPoints.push_back(startPoint);
 
-
 			b_sp = false;
 		}
 	}
 	//draws a circle and the point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
 	for (int i = 0; i < demonPoints.size(); i += 2) {
 		line.curveTo(demonPoints[i]);
+		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
 	}
 
-	//Eye at the centre
+	//Eye at the centre, being silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
+	//int xOffset = centre.x - eyeDot.x;
 	ofFill();
-	ofDrawCircle(centre.x, centre.y, 20);
+	ofDrawCircle(centre.x, centre.y, 10);
 	ofNoFill();
-	ofDrawCircle(eyeDot.x, eyeDot.y, 40);
+	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
 
 	//draw the line
-	ofSetLineWidth(10); 
+	ofSetLineWidth(7); 
 	line.draw();
 	ofPopMatrix();
+}
+void ofApp::showImg() {
+	ofSetColor(255, 255, 255);
+	img.draw(0, 0);
+	// Where to put this so it doesn't color the image? but also so it isn't causing epileptic fits by calling it from draw or update
+	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
 }
 
 void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		line.clear();
 		demonPoints.clear();
-		// demon is drawn with random color from demon color palette
+		// demon is drawn with random color from demon color palette - except it isn't!!!
 		ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
 		b_sp = true;
+		
+
 
 	}
 }

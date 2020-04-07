@@ -8,17 +8,16 @@ public:
 	void setup();
 	void update();
 	void draw();
-
-	ofPolyline body;
-	ofPolyline eye;
-
+	void showImg();
+	ofImage img;
 	//vector of demon colors
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;
-	float time;
 
+	int imgW, imgH;
 	void keyPressed(int key);
-	float v;
+
+	ofPolyline legLine;
 
 	//set the centre point of the blob
 	ofVec3f centre;
