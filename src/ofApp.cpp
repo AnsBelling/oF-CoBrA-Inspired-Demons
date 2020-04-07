@@ -3,17 +3,13 @@
 /*
 Acknowledgements:
 
-Thanks to Archie. Without you, none of this would have been possible.
-Ma
-
-
 */
 
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofBackground(0);
 	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
-	/*	//Draw a circle
+	/* Rubbish	//Draw a circle
 	for (int i = -30; i <= 360 + 30; i += 30) {
 
 		float x = ofGetWidth() * 3 / 4 + cos(DEG_TO_RAD * i) * 100;
@@ -23,13 +19,13 @@ void ofApp::setup() {
 	}
 
 	*/
-
-	//initialise centre point, range and boolean so a demon is drawn straight away
+	
+	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
 	centre.x = 0;
 	centre.y = 0;
 	b_sp = true;
-	range = 300;
-	change = 100;
+	range = 150;
+	change = 50;
 
 	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
@@ -77,12 +73,13 @@ void ofApp::draw() {
 	body.draw();
 	*/
 
+	// A vector of all the points within 100 distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes
 
 	ofPushMatrix();
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
-		// 4 for loops to add the points to a vector in clockwise order
+		// 4 for loops to add the points to a vector in clockwise order, each covering an quarter of the space, changing the values of the x, y points with a random number to generate the random blobs
 		for (int i = centre.x; i < centre.x + range; i++) {
 			for (int j = centre.y - range; j < centre.y; j++) {
 				dist = ofDist(centre.x, centre.y, i, j);
@@ -123,7 +120,8 @@ void ofApp::draw() {
 				}
 			}
 		}
-		//adds random points to the demon vector once since it falses the bool and removes the chosen point to prevent duplicates
+
+		//adds random points to the Demon vector once since it falses the bool and removes the chosen point to prevent duplicates
 		for (int p = 0; p < blobpoints.size(); p++) {
 			//int index = ofRandom(1,blobpoints.size());
 			startPoint.x = blobpoints[p].x;
@@ -141,18 +139,16 @@ void ofApp::draw() {
 		line.curveTo(demonPoints[i]);
 	}
 
-	//Pulsating eye at the centre
+	//Eye at the centre
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
-	float time = ofGetElapsedTimef() / 4;
-	float value = sin(time * M_TWO_PI);
-	v = ofMap(value, -1, 1, 10, 20);
 	ofFill();
-	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
+	ofDrawCircle(centre.x, centre.y, 20);
 	ofNoFill();
 	ofDrawCircle(eyeDot.x, eyeDot.y, 40);
 
 	//draw the line
+	ofSetLineWidth(10); 
 	line.draw();
 	ofPopMatrix();
 }
@@ -161,6 +157,7 @@ void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		line.clear();
 		demonPoints.clear();
+		// demon is drawn with random color from demon color palette
 		ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
 		b_sp = true;
 
