@@ -2,23 +2,6 @@
 
 #include "ofMain.h"
 
-#include "ofxOilPaint.h"
-
-class Demon : public ofBaseApp {
-public:
-	ofVec2f demonPos;
-	ofPolyline demonOutline;
-
-	Demon();
-	~Demon();
-	void drawDemon();
-	void updateDemon();
-
-	//vector of demon colors
-	vector<ofColor> demonColorPalette;
-
-};
-
 class ofApp : public ofBaseApp {
 
 public:
@@ -26,19 +9,30 @@ public:
 	void update();
 	void draw();
 
-	ofImage img;
-	int imgW, imgH;
+	ofPolyline body;
+	ofPolyline eye;
 
-	ofFbo canvas;
-	ofPixels canvasPixels;
-	ofxOilBrush brush;
-	vector<ofColor> initialBristleColors;
-	vector<ofColor> currentBristleColors;
-	float alphaValue;
+	//vector of demon colors
+	vector<ofColor> demonColorPalette;
+	ofPoint eyeDot;
+	float time;
 
-	glm::vec2 lastAddedPoint;
-	float nextPathLength;
+	void keyPressed(int key);
+	float v;
 
-	Demon demon;
+	//set the centre point of the blob
+	ofVec3f centre;
+	//set distance vairable so it can be use to only collect point at a specific range
+	float dist;
+	//poly line duh
+	ofPolyline line;
+	//blob points takes the points within range of the centre and demon points is made up of a number of randomly selcted points from blob points
+	vector<ofVec3f> blobpoints, demonPoints;
+	//startpoint just used to write to demonpoints easier
+	ofVec3f startPoint;
+	//boolean that allows refresh of demon
+	bool b_sp;
+	//the range used around the centre point
+	int range, change;
+
 };
-

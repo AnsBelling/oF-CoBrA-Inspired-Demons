@@ -1,72 +1,169 @@
 #include "ofApp.h"
 
+/*
+Acknowledgements:
+
+Thanks to Archie. Without you, none of this would have been possible.
+Ma
+
+
+*/
+
 //--------------------------------------------------------------
 void ofApp::setup() {
-	//loading image for background
-	img.load("riverscene.jpg");
-	imgW = img.getWidth();
-	imgH = img.getHeight();
-	ofSetWindowShape(imgW, imgH);
+	ofBackground(0);
+	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
+	/*	//Draw a circle
+	for (int i = -30; i <= 360 + 30; i += 30) {
 
-	//Q for DAN: Is it necessary to instantiate a demon object like this? 
-	demon = Demon();
+		float x = ofGetWidth() * 3 / 4 + cos(DEG_TO_RAD * i) * 100;
+		float y = ofGetHeight() / 2 + sin(DEG_TO_RAD * i) * 100;
 
-	//Adding ofColor elements (colors extracted from CoBrA painting) to demon color palette	
+		body.curveTo(x, y);
+	}
+
+	*/
+
+	//initialise centre point, range and boolean so a demon is drawn straight away
+	centre.x = 0;
+	centre.y = 0;
+	b_sp = true;
+	range = 300;
+	change = 100;
+
+	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
-	demon.demonColorPalette.push_back(demonBlue);
+	demonColorPalette.push_back(demonBlue);
 	ofColor demonRed(225, 37, 21);
-	demon.demonColorPalette.push_back(demonRed);
+	demonColorPalette.push_back(demonRed);
 	ofColor demonOrange(247, 125, 3);
-	demon.demonColorPalette.push_back(demonOrange);
+	demonColorPalette.push_back(demonOrange);
 	ofColor demonYellow(246, 202, 20);
-	demon.demonColorPalette.push_back(demonYellow);
+	demonColorPalette.push_back(demonYellow);
 	ofColor demonWhite(248, 251, 245);
-	demon.demonColorPalette.push_back(demonWhite);
+	demonColorPalette.push_back(demonWhite);
 	ofColor demonGreen(118, 229, 107);
-	demon.demonColorPalette.push_back(demonGreen);
+	demonColorPalette.push_back(demonGreen);
 
-
-
-	// Initialize the oil painting canvas where it will paint to img size 
-	canvas.allocate(imgW, imgH, GL_RGB, 3);
-	canvas.begin();
-	//ofClear();
-	canvas.end();
-
-	// Initialize the application variables
-	alphaValue = 1;
-	nextPathLength = 0;
-
-	//Setting position of demon to random place on image and random brush size between 5 and 25
-	demon.demonPos = ofVec2f(ofRandom(0, imgW), ofRandom(0, imgH));
-	brush = ofxOilBrush(demon.demonPos, ofRandom(5, 25));
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
+	/*//Make edges move randomly
+	for (auto &vert : body.getVertices()) {
+		vert.x += ofRandom(-0.2, 0.2);
+		vert.y += ofRandom(-0.2, 0.2);
+	}
+	//	body = body.getSmoothed(2);
+	*/
+
+	//clear the blobpoint vector
+	blobpoints.clear();
 
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	// Paint the canvas on the application window
-	canvas.draw(0, 0);
-	demon.drawDemon();
+	/*//body = body.getResampledBySpacing(0.5);
+
+	eyeDot.x = body.getCentroid2D().x;
+	eyeDot.y = body.getCentroid2D().y;
+	float time = ofGetElapsedTimef()/4;
+	float value = sin(time * M_TWO_PI);
+	v = ofMap(value, -1, 1, 10, 20);
+
+	ofSetColor(255);
+	ofDrawCircle(eyeDot.x, eyeDot.y, v);
+	body.draw();
+	*/
+
+
+	ofPushMatrix();
+	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
+	if (b_sp) {
+		// 4 for loops to add the points to a vector in clockwise order
+		for (int i = centre.x; i < centre.x + range; i++) {
+			for (int j = centre.y - range; j < centre.y; j++) {
+				dist = ofDist(centre.x, centre.y, i, j);
+				if (dist == range) {
+					//if the distance from the centre to i,j is the range then push the point to the blob vector
+					ofVec2f point(i + ofRandom(-change, change), j + ofRandom(-change, change));
+					blobpoints.push_back(point);
+				}
+			}
+		}
+		for (int i = centre.x + range; i > centre.x; i--) {
+			for (int j = centre.y; j < centre.y + range; j++) {
+				dist = ofDist(centre.x, centre.y, i, j);
+				if (dist == range) {
+					//if the distance from the centre to i,j is the range then push the point to the blob vector
+					ofVec2f point(i + ofRandom(-change, change), j + ofRandom(-change, change));
+					blobpoints.push_back(point);
+				}
+			}
+		}
+		for (int i = centre.x; i > centre.x - range; i--) {
+			for (int j = centre.y + range; j > centre.y; j--) {
+				dist = ofDist(centre.x, centre.y, i, j);
+				if (dist == range) {
+					//if the distance from the centre to i,j is the range then push the point to the blob vector
+					ofVec2f point(i + ofRandom(-change, change), j + ofRandom(-change, change));
+					blobpoints.push_back(point);
+				}
+			}
+		}
+		for (int i = centre.x - range; i < centre.x; i++) {
+			for (int j = centre.y; j > centre.y - range; j--) {
+				dist = ofDist(centre.x, centre.y, i, j);
+				if (dist == range) {
+					//if the distance from the centre to i,j is the range then push the point to the blob vector
+					ofVec2f point(i + ofRandom(-change, change), j + ofRandom(-change, change));
+					blobpoints.push_back(point);
+				}
+			}
+		}
+		//adds random points to the demon vector once since it falses the bool and removes the chosen point to prevent duplicates
+		for (int p = 0; p < blobpoints.size(); p++) {
+			//int index = ofRandom(1,blobpoints.size());
+			startPoint.x = blobpoints[p].x;
+			startPoint.y = blobpoints[p].y;
+			//line.curveTo(startPoint);
+			//blobpoints.erase(blobpoints.begin()+p);
+			demonPoints.push_back(startPoint);
+
+
+			b_sp = false;
+		}
+	}
+	//draws a circle and the point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
+	for (int i = 0; i < demonPoints.size(); i += 2) {
+		line.curveTo(demonPoints[i]);
+	}
+
+	//Pulsating eye at the centre
+	eyeDot.x = line.getCentroid2D().x;
+	eyeDot.y = line.getCentroid2D().y;
+	float time = ofGetElapsedTimef() / 4;
+	float value = sin(time * M_TWO_PI);
+	v = ofMap(value, -1, 1, 10, 20);
+	ofFill();
+	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
+	ofNoFill();
+	ofDrawCircle(eyeDot.x, eyeDot.y, 40);
+
+	//draw the line
+	line.draw();
+	ofPopMatrix();
 }
 
-Demon::Demon()
-{
+void ofApp::keyPressed(int key) {
+	if (key == 'b') {
+		line.clear();
+		demonPoints.clear();
+		ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
+		b_sp = true;
+
+	}
 }
 
-Demon::~Demon()
-{
-}
-
-void Demon::drawDemon()
-{
-
-}
-
-void Demon::updateDemon()
-{
-}

@@ -11,3 +11,13 @@ oFCoBrADemons/.vs/oFCoBrADemons/v15/.suo
 *.opendb
 *.db-shm
 .vs/oF-CoBrA-Inspired-Demons/v15/.suo
+*.pdb
+*.obj
+*.dll
+*.ilk
+*.exe
+*.exp
+*.lib
+*.res
+*.log
+*.tlog
