@@ -8,8 +8,8 @@ public:
 	void setup();
 	void update();
 	void draw();
-	void showImg();
-	ofImage img;
+
+    ofImage img;
 	//vector of demon colors
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;
@@ -33,5 +33,6 @@ public:
 	bool b_sp;
 	//the range used around the centre point
 	int range, change;
+    int currentDemonCol;
 
 };

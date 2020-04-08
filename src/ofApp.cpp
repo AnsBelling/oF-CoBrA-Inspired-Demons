@@ -44,6 +44,8 @@ void ofApp::setup() {
 	demonColorPalette.push_back(demonWhite);
 	ofColor demonGreen(118, 229, 107);
 	demonColorPalette.push_back(demonGreen);
+    
+    currentDemonCol = ofRandom(demonColorPalette.size());
 
 }
 
@@ -77,9 +79,11 @@ void ofApp::draw() {
 	*/
 
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
+    ofSetColor(255, 255, 255);
+    img.draw(0, 0);
+    ofSetColor(demonColorPalette[currentDemonCol]);
 
 	ofPushMatrix();
-	showImg();
 	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
@@ -157,23 +161,17 @@ void ofApp::draw() {
 	line.draw();
 	ofPopMatrix();
 }
-void ofApp::showImg() {
-	ofSetColor(255, 255, 255);
-	img.draw(0, 0);
-	// Where to put this so it doesn't color the image? but also so it isn't causing epileptic fits by calling it from draw or update
-	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
-}
+
 
 void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		line.clear();
 		demonPoints.clear();
 		// demon is drawn with random color from demon color palette - except it isn't!!!
-		ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
+		//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
+        currentDemonCol = ofRandom(demonColorPalette.size());
+
 		b_sp = true;
-		
-
-
 	}
 }
 
