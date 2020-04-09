@@ -10,7 +10,7 @@ void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
 
-	//Generate a random number of demons and add to my vector of Demons.
+	//Generate a random number between 0 and 5 of demons and add to my vector of Demons.
 	numberOfDemons = ofRandom(0, 5);
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
@@ -49,9 +49,7 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {
-
-	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
+void ofApp::draw() {	
 	for (int i = 0; i < demonGroup.size(); i++) {
 		ofSetColor(255, 255, 255);
 		images[randomPicker].draw(0, 0);
@@ -76,7 +74,8 @@ void ofApp::keyPressed(int key) {
 			//set demon color to a random within the demon color palette
 			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
 
-			//spawn demons in random position on screen
+			//spawn demons in random position on screen - ignore the - line.getArea() , i was trying to get it to stay within picture, 
+			//but then felt it was interesting when it sometimes spawned some of the demon body out of view 
 			demonGroup[i].blobPositionX = ofRandom(0, (imgW - demonGroup[i].line.getArea()));
 			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
 
@@ -88,9 +87,9 @@ void ofApp::keyPressed(int key) {
 }
 
 void Demon::drawDemons(){
-	
+	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. 
+	//These points are then used to draw the shapes.
 	ofPushMatrix();
-
 	ofTranslate(blobPositionX, blobPositionY);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
@@ -156,7 +155,7 @@ void Demon::drawDemons(){
 		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
 	}
 
-	//Eye at the centre, silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
+	//EYES at the centre, silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
 	//int xOffset = centre.x - eyeDot.x;
@@ -166,7 +165,7 @@ void Demon::drawDemons(){
 	ofFill();
 	ofSetColor(0);
 	ofDrawCircle(centre.x, centre.y, 10);
-
+	//
 
 	ofSetColor(demonColorPalette[currentDemonColor]);
 	//draw the linedemon.
@@ -179,7 +178,6 @@ void Demon::drawDemons(){
 
 Demon::Demon()
 {
-
 	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
 	centre.x = 0;
 	centre.y = 0;
@@ -201,7 +199,6 @@ Demon::Demon()
 	demonColorPalette.push_back(demonWhite);
 	ofColor demonGreen(118, 229, 107);
 	demonColorPalette.push_back(demonGreen);
-
 
 }
 
