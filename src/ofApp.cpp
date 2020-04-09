@@ -11,7 +11,7 @@ void ofApp::setup() {
 	ofBackground(0);
 
 	//Generate a random number between 2 and 5 of demons and add to my vector of Demons.
-	numberOfDemons = ofRandom(2, 5);
+	numberOfDemons = ofRandom(2, 10);
 	demonGroup.resize(numberOfDemons);
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
@@ -76,7 +76,7 @@ void ofApp::keyPressed(int key) {
 			ofSetWindowShape(imgW, imgH);
 
 			//generate a new set of demons
-			numberOfDemons = ofRandom(2, 5);
+			numberOfDemons = ofRandom(2, 10);
 			demonGroup.resize(numberOfDemons);
 			for (int j = 0; j < numberOfDemons; j++) {
 				Demon demon;
