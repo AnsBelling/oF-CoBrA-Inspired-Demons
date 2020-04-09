@@ -18,7 +18,7 @@ void ofApp::setup() {
 	};
 	
 	//add images to vector within an ofxThreadedImageLoader object 
-	numberOfImgs = 4;
+	numberOfImgs = 3;
 	images.resize(numberOfImgs);
 	for (int i = 0; i < numberOfImgs; i++) {
 		loader.loadFromDisk(images[i], "Image" + ofToString(i) + ".jpg");
