@@ -63,6 +63,7 @@ void ofApp::update() {
 	}
 	//	body = body.getSmoothed(2);
 	*/
+	
 	//clear the blobpoint vector
 	blobpoints.clear();
 	
@@ -160,11 +161,15 @@ void ofApp::draw() {
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
 	//int xOffset = centre.x - eyeDot.x;
-	ofFill();
-	ofDrawCircle(centre.x, centre.y, 10);
-	ofNoFill();
+	//ofNoFill();
+	ofSetColor(255, 255, 255);
 	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
-	 
+	ofFill();
+	ofSetColor(0);
+	ofDrawCircle(centre.x, centre.y, 10);
+	
+
+	ofSetColor(demonColorPalette[currentDemonColor]);
 	//draw the line
 	ofSetLineWidth(7); 
 	line.draw();
@@ -192,6 +197,10 @@ void ofApp::keyPressed(int key) {
 
 		blobPositionX = ofRandom(0, (imgW-line.getArea()));
 		blobPositionY = ofRandom(0, (imgH-line.getArea()));
+		
+
+		img.grabScreen(0, 0, 300, 300);
+		img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
 
 		
 
