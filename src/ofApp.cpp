@@ -2,7 +2,7 @@
 
 /*
 Acknowledgements:
-
+Archie is blob master.
 */
 
 //--------------------------------------------------------------
@@ -10,37 +10,27 @@ void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
 
+	//Generate a random number of demons and add to my vector of Demons.
 	numberOfDemons = ofRandom(0, 5);
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
 		demonGroup.push_back(demon);
 	};
-
-	numberOfImgs = 3;
+	
+	//add images to vector within an ofxThreadedImageLoader object 
+	numberOfImgs = 4;
 	images.resize(numberOfImgs);
 	for (int i = 0; i < numberOfImgs; i++) {
 		loader.loadFromDisk(images[i], "Image" + ofToString(i) + ".jpg");
-	}
+	};
+
+	//random selection of images
 	randomPicker = ofRandom(0, numberOfImgs);
 	imgW = images[randomPicker].getWidth();
 	imgH = images[randomPicker].getHeight();
 	ofSetWindowShape(imgW, imgH);
 
-	/* Rubbish	//Draw a circle
-	for (int i = -30; i <= 360 + 30; i += 30) {
-		float x = ofGetWidth() * 3 / 4 + cos(DEG_TO_RAD * i) * 100;
-		float y = ofGetHeight() / 2 + sin(DEG_TO_RAD * i) * 100;
 
-		body.curveTo(x, y);
-	}
-
-	*/
-
-	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
-	
-
-	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
-	
 }
 //--------------------------------------------------------------
 void ofApp::update() {
@@ -49,7 +39,7 @@ void ofApp::update() {
 		vert.x += ofRandom(-1, 1);
 		vert.y += ofRandom(-1, 1);
 	}
-	//	body = body.getSmoothed(2);
+	//	line = line.getSmoothed(2);
 	*/
 
 	//clear the blobpoint vector
@@ -63,15 +53,11 @@ void ofApp::draw() {
 
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
 	for (int i = 0; i < demonGroup.size(); i++) {
-
 		ofSetColor(255, 255, 255);
 		images[randomPicker].draw(0, 0);
 		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
 		demonGroup[i].drawDemons();
 	}
-	
-
-	
 }
 
 
@@ -83,21 +69,20 @@ void ofApp::keyPressed(int key) {
 			demonGroup[i].b_sp = true;
 
 			randomPicker = ofRandom(0, numberOfImgs);
-
 			imgW = images[randomPicker].getWidth();
 			imgH = images[randomPicker].getHeight();
 			ofSetWindowShape(imgW, imgH);
 
+			//set demon color to a random within the demon color palette
 			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
 
+			//spawn demons in random position on screen
 			demonGroup[i].blobPositionX = ofRandom(0, (imgW - demonGroup[i].line.getArea()));
 			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
 
 
 			//img.grabScreen(0, 0, imgW, imgH);
 			//img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
-
-
 		}
 	}
 }
@@ -171,7 +156,7 @@ void Demon::drawDemons(){
 		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
 	}
 
-	//Eye at the centre, being silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
+	//Eye at the centre, silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
 	//int xOffset = centre.x - eyeDot.x;
@@ -194,12 +179,16 @@ void Demon::drawDemons(){
 
 Demon::Demon()
 {
+
+	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
 	centre.x = 0;
 	centre.y = 0;
 	b_sp = true;
 	range = 75;
 	change = 25;
 
+
+	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
 	demonColorPalette.push_back(demonBlue);
 	ofColor demonRed(225, 37, 21);

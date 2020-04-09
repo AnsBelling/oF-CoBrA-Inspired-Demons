@@ -39,17 +39,21 @@ public:
 	void setup();
 	void update();
 	void draw();
-	
+	//my group of demons
 	vector<Demon> demonGroup;
 
-	int currentPainting;
 	int numberOfDemons;
+
 	ofImage img;
+
+	//Variables for paintings
+	int currentPainting;
 	vector<ofImage> images;
 	int numberOfImgs;
 	ofxThreadedImageLoader loader;
 	int randomPicker;
 	int imgW, imgH;
+	//the keypressed that generates new images
 	void keyPressed(int key);
 
 
