@@ -3,37 +3,20 @@
 #include "ofMain.h"
 
 #include "ofxThreadedImageLoader.h"
-
-class ofApp : public ofBaseApp {
-
+class Demon : public ofBaseApp {
 public:
-	void setup();
-	void update();
-	void draw();
-
-	int currentDemonColor;
-	int currentPainting;
+	
 	int blobPositionX, blobPositionY;
-	ofImage img;
-	vector<ofImage> images;
-	int numberOfImgs;
-	ofxThreadedImageLoader loader;
-	int randomPicker;
-	//vector of demon colors
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;
-
-	int imgW, imgH;
-	void keyPressed(int key);
-
-	ofPolyline legLine;
 
 	//set the centre point of the blob
 	ofVec3f centre;
 	//set distance vairable so it can be use to only collect point at a specific range
 	float dist;
-	//poly line duh
+	//Demon Blob outline
 	ofPolyline line;
+	ofPolyline legLine;
 	//blob points takes the points within range of the centre and demon points is made up of a number of randomly selcted points from blob points
 	vector<ofVec3f> blobpoints, demonPoints;
 	//startpoint just used to write to demonpoints easier
@@ -42,5 +25,32 @@ public:
 	bool b_sp;
 	//the range used around the centre point
 	int range, change;
+	int currentDemonColor;
+	void drawDemons();
+	
+	Demon();
+	~Demon();
+
+};
+
+class ofApp : public ofBaseApp {
+
+public:
+	void setup();
+	void update();
+	void draw();
+	
+	vector<Demon> demonGroup;
+
+	int currentPainting;
+	int numberOfDemons;
+	ofImage img;
+	vector<ofImage> images;
+	int numberOfImgs;
+	ofxThreadedImageLoader loader;
+	int randomPicker;
+	int imgW, imgH;
+	void keyPressed(int key);
+
 
 };

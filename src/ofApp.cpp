@@ -10,8 +10,12 @@ void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
 
+	numberOfDemons = ofRandom(0, 5);
+	for (int j = 0; j < numberOfDemons; j++) {
+		Demon demon;
+		demonGroup.push_back(demon);
+	};
 
-	//
 	numberOfImgs = 3;
 	images.resize(numberOfImgs);
 	for (int i = 0; i < numberOfImgs; i++) {
@@ -33,26 +37,10 @@ void ofApp::setup() {
 	*/
 
 	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
-	centre.x = 0;
-	centre.y = 0;
-	b_sp = true;
-	range = 75;
-	change = 25;
+	
 
 	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
-	ofColor demonBlue(69, 211, 222);
-	demonColorPalette.push_back(demonBlue);
-	ofColor demonRed(225, 37, 21);
-	demonColorPalette.push_back(demonRed);
-	ofColor demonOrange(247, 125, 3);
-	demonColorPalette.push_back(demonOrange);
-	ofColor demonYellow(246, 202, 20);
-	demonColorPalette.push_back(demonYellow);
-	ofColor demonWhite(248, 251, 245);
-	demonColorPalette.push_back(demonWhite);
-	ofColor demonGreen(118, 229, 107);
-	demonColorPalette.push_back(demonGreen);
-
+	
 }
 //--------------------------------------------------------------
 void ofApp::update() {
@@ -63,35 +51,61 @@ void ofApp::update() {
 	}
 	//	body = body.getSmoothed(2);
 	*/
-	
+
 	//clear the blobpoint vector
-	blobpoints.clear();
-	
+	for (int i = 0; i < demonGroup.size(); i++) {
+		demonGroup[i].blobpoints.clear();
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::draw() {
 
-	/*//body = body.getResampledBySpacing(0.5);
-
-	eyeDot.x = line.getCentroid2D().x;
-	eyeDot.y = line.getCentroid2D().y;
-	float time = ofGetElapsedTimef()/4;
-	float value = sin(time * M_TWO_PI);
-	v = ofMap(value, -1, 1, 10, 20);
-
-	ofSetColor(255);
-	ofDrawCircle(eyeDot.x, eyeDot.y, v);
-	body.draw();
-	*/
-	ofSetColor(255, 255, 255);
-	images[randomPicker].draw(0, 0);
-	ofSetColor(demonColorPalette[currentDemonColor]);
-
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
+	for (int i = 0; i < demonGroup.size(); i++) {
+
+		ofSetColor(255, 255, 255);
+		images[randomPicker].draw(0, 0);
+		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
+		demonGroup[i].drawDemons();
+	}
+	
+
+	
+}
+
+
+void ofApp::keyPressed(int key) {
+	if (key == 'b') {
+		for (int i = 0; i < demonGroup.size(); i++) {
+			demonGroup[i].line.clear();
+			demonGroup[i].demonPoints.clear();
+			demonGroup[i].b_sp = true;
+
+			randomPicker = ofRandom(0, numberOfImgs);
+
+			imgW = images[randomPicker].getWidth();
+			imgH = images[randomPicker].getHeight();
+			ofSetWindowShape(imgW, imgH);
+
+			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
+
+			demonGroup[i].blobPositionX = ofRandom(0, (imgW - demonGroup[i].line.getArea()));
+			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
+
+
+			//img.grabScreen(0, 0, imgW, imgH);
+			//img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
+
+
+		}
+	}
+}
+
+void Demon::drawDemons(){
 	
 	ofPushMatrix();
-	
+
 	ofTranslate(blobPositionX, blobPositionY);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
@@ -152,7 +166,7 @@ void ofApp::draw() {
 	//draws a circle and the point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
 	for (int i = 0; i < demonPoints.size(); i += 2) {
 		line.curveTo(demonPoints[i]);
-		
+
 		//brush.updatePosition(demonPoints[i], 5);
 		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
 	}
@@ -167,44 +181,41 @@ void ofApp::draw() {
 	ofFill();
 	ofSetColor(0);
 	ofDrawCircle(centre.x, centre.y, 10);
-	
+
 
 	ofSetColor(demonColorPalette[currentDemonColor]);
-	//draw the line
-	ofSetLineWidth(7); 
+	//draw the linedemon.
+	ofSetLineWidth(7);
 	line.draw();
 
 	ofPopMatrix();
 
-	
 }
 
+Demon::Demon()
+{
+	centre.x = 0;
+	centre.y = 0;
+	b_sp = true;
+	range = 75;
+	change = 25;
 
-void ofApp::keyPressed(int key) {
-	if (key == 'b') {
-		line.clear();
-		demonPoints.clear();
-		// demon is drawn with random color from demon color palette - except it isn't!!!
-		b_sp = true;
-	
-		randomPicker = ofRandom(0, numberOfImgs);
-
-		imgW = images[randomPicker].getWidth();
-		imgH = images[randomPicker].getHeight();
-		ofSetWindowShape(imgW, imgH);
-
-		currentDemonColor = ofRandom(0, demonColorPalette.size());
-
-		blobPositionX = ofRandom(0, (imgW-line.getArea()));
-		blobPositionY = ofRandom(0, (imgH-line.getArea()));
-		
-
-		img.grabScreen(0, 0, 300, 300);
-		img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
-
-		
+	ofColor demonBlue(69, 211, 222);
+	demonColorPalette.push_back(demonBlue);
+	ofColor demonRed(225, 37, 21);
+	demonColorPalette.push_back(demonRed);
+	ofColor demonOrange(247, 125, 3);
+	demonColorPalette.push_back(demonOrange);
+	ofColor demonYellow(246, 202, 20);
+	demonColorPalette.push_back(demonYellow);
+	ofColor demonWhite(248, 251, 245);
+	demonColorPalette.push_back(demonWhite);
+	ofColor demonGreen(118, 229, 107);
+	demonColorPalette.push_back(demonGreen);
 
 
-	}
 }
 
+Demon::~Demon()
+{
+}
