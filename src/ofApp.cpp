@@ -11,13 +11,15 @@ void ofApp::setup() {
 	ofBackground(0);
 
 	//Generate a random number between 2 and 5 of demons and add to my vector of Demons.
-	numberOfDemons = ofRandom(2, 10);
-	demonGroup.resize(numberOfDemons);
+	numberOfDemons = ofRandom(2, 5);
+
+	//demonGroup.resize(numberOfDemons);
+
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
 		demonGroup.push_back(demon);
 	};
-	
+	cout << demonGroup.size() << endl;
 	//add images to vector within an ofxThreadedImageLoader object 
 	numberOfImgs = 4;
 	images.resize(numberOfImgs);
@@ -50,10 +52,10 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {	
+void ofApp::draw() {
 	ofSetColor(255, 255, 255);
 	images[randomPicker].draw(0, 0);
-
+	//cout << demonGroup.size() << endl;
 	for (int i = 0; i < demonGroup.size(); i++) {
 		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
 		demonGroup[i].drawDemons();
@@ -64,25 +66,26 @@ void ofApp::draw() {
 void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		for (int i = 0; i < demonGroup.size(); i++) {
-			demonGroup.clear();
+
 			demonGroup[i].line.clear();
 			demonGroup[i].demonPoints.clear();
 			demonGroup[i].b_sp = true;
+		}
+		demonGroup.clear();
+		//Provides a random image at keypressed
+		randomPicker = ofRandom(0, numberOfImgs);
+		imgW = images[randomPicker].getWidth();
+		imgH = images[randomPicker].getHeight();
+		ofSetWindowShape(imgW, imgH);
 
-			//Provides a random image at keypressed
-			randomPicker = ofRandom(0, numberOfImgs);
-			imgW = images[randomPicker].getWidth();
-			imgH = images[randomPicker].getHeight();
-			ofSetWindowShape(imgW, imgH);
-
-			//generate a new set of demons
-			numberOfDemons = ofRandom(2, 10);
-			demonGroup.resize(numberOfDemons);
-			for (int j = 0; j < numberOfDemons; j++) {
-				Demon demon;
-				demonGroup.push_back(demon);
-			};
-
+		//generate a new set of demons
+		numberOfDemons = ofRandom(2, 5);
+		//demonGroup.resize(numberOfDemons);
+		for (int j = 0; j < numberOfDemons; j++) {
+			Demon demon;
+			demonGroup.push_back(demon);
+		};
+		for (int i = 0; i < demonGroup.size(); i++) {
 			//set demon color to a random color within the demon color palette
 			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
 
@@ -98,7 +101,7 @@ void ofApp::keyPressed(int key) {
 	}
 }
 
-void Demon::drawDemons(){
+void Demon::drawDemons() {
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. 
 	//These points are then used to draw the shapes.
 	ofPushMatrix();
@@ -181,7 +184,7 @@ void Demon::drawDemons(){
 
 	ofSetColor(demonColorPalette[currentDemonColor]);
 	//draw the linedemon.
-	ofSetLineWidth(7);
+	ofSetLineWidth(15);
 	line.draw();
 
 	ofPopMatrix();
@@ -196,7 +199,7 @@ Demon::Demon()
 	b_sp = true;
 	range = 75;
 	change = 25;
-
+	currentDemonColor = 0;
 
 	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);

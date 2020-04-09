@@ -12,7 +12,7 @@ public:
 
 	//set the centre point of the blob
 	ofVec3f centre;
-	//set distance vairable so it can be use to only collect point at a specific range
+	//set distance variable so it can be used to only collect point at a specific range
 	float dist;
 	//Demon Blob outline
 	ofPolyline line;
