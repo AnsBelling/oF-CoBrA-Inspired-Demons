@@ -1,1 +1,1 @@
-ofxOilPaint
+ofxThreadedImageLoader

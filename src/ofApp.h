@@ -2,14 +2,23 @@
 
 #include "ofMain.h"
 
+#include "ofxThreadedImageLoader.h"
+
 class ofApp : public ofBaseApp {
 
 public:
 	void setup();
 	void update();
 	void draw();
-	void showImg();
+
+	int currentDemonColor;
+	int currentPainting;
+	int blobPositionX, blobPositionY;
 	ofImage img;
+	vector<ofImage> images;
+	int numberOfImgs;
+	ofxThreadedImageLoader loader;
+	int randomPicker;
 	//vector of demon colors
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;

@@ -7,15 +7,23 @@ Acknowledgements:
 
 //--------------------------------------------------------------
 void ofApp::setup() {
+	ofSetBackgroundAuto(false);
 	ofBackground(0);
-	img.load("riverscene.jpg");
-	imgW = img.getWidth();
-	imgH = img.getHeight();
+
+
+	//
+	numberOfImgs = 3;
+	images.resize(numberOfImgs);
+	for (int i = 0; i < numberOfImgs; i++) {
+		loader.loadFromDisk(images[i], "Image" + ofToString(i) + ".jpg");
+	}
+	randomPicker = ofRandom(0, numberOfImgs);
+	imgW = images[randomPicker].getWidth();
+	imgH = images[randomPicker].getHeight();
 	ofSetWindowShape(imgW, imgH);
-	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
+
 	/* Rubbish	//Draw a circle
 	for (int i = -30; i <= 360 + 30; i += 30) {
-
 		float x = ofGetWidth() * 3 / 4 + cos(DEG_TO_RAD * i) * 100;
 		float y = ofGetHeight() / 2 + sin(DEG_TO_RAD * i) * 100;
 
@@ -23,13 +31,13 @@ void ofApp::setup() {
 	}
 
 	*/
-	
+
 	//initialise centre point of the Demon, range and boolean so a demon is drawn straight away
 	centre.x = 0;
 	centre.y = 0;
 	b_sp = true;
 	range = 75;
-	change =25;
+	change = 25;
 
 	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
@@ -46,7 +54,6 @@ void ofApp::setup() {
 	demonColorPalette.push_back(demonGreen);
 
 }
-
 //--------------------------------------------------------------
 void ofApp::update() {
 	/*//Make edges move randomly
@@ -63,6 +70,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+
 	/*//body = body.getResampledBySpacing(0.5);
 
 	eyeDot.x = line.getCentroid2D().x;
@@ -75,12 +83,15 @@ void ofApp::draw() {
 	ofDrawCircle(eyeDot.x, eyeDot.y, v);
 	body.draw();
 	*/
+	ofSetColor(255, 255, 255);
+	images[randomPicker].draw(0, 0);
+	ofSetColor(demonColorPalette[currentDemonColor]);
 
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. These points are then used to draw the shapes.
-
+	
 	ofPushMatrix();
-	showImg();
-	ofTranslate(ofGetWidth() / 2, ofGetHeight() / 2);
+	
+	ofTranslate(blobPositionX, blobPositionY);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
 		// 4 for loops to add the points to a vector in clockwise order, each covering an quarter of the space, changing the values of the x, y points with a random number to generate the random blobs
@@ -140,6 +151,8 @@ void ofApp::draw() {
 	//draws a circle and the point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
 	for (int i = 0; i < demonPoints.size(); i += 2) {
 		line.curveTo(demonPoints[i]);
+		
+		//brush.updatePosition(demonPoints[i], 5);
 		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
 	}
 
@@ -151,26 +164,35 @@ void ofApp::draw() {
 	ofDrawCircle(centre.x, centre.y, 10);
 	ofNoFill();
 	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
-
+	 
 	//draw the line
 	ofSetLineWidth(7); 
 	line.draw();
+
 	ofPopMatrix();
+
+	
 }
-void ofApp::showImg() {
-	ofSetColor(255, 255, 255);
-	img.draw(0, 0);
-	// Where to put this so it doesn't color the image? but also so it isn't causing epileptic fits by calling it from draw or update
-	//ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
-}
+
 
 void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		line.clear();
 		demonPoints.clear();
 		// demon is drawn with random color from demon color palette - except it isn't!!!
-		ofSetColor(demonColorPalette[(int)ofRandom(0, 5)]);
 		b_sp = true;
+	
+		randomPicker = ofRandom(0, numberOfImgs);
+
+		imgW = images[randomPicker].getWidth();
+		imgH = images[randomPicker].getHeight();
+		ofSetWindowShape(imgW, imgH);
+
+		currentDemonColor = ofRandom(0, demonColorPalette.size());
+
+		blobPositionX = ofRandom(0, (imgW-line.getArea()));
+		blobPositionY = ofRandom(0, (imgH-line.getArea()));
+
 		
 
 
