@@ -10,15 +10,16 @@ void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
 
-	//Generate a random number between 0 and 5 of demons and add to my vector of Demons.
-	numberOfDemons = ofRandom(0, 5);
+	//Generate a random number between 2 and 5 of demons and add to my vector of Demons.
+	numberOfDemons = ofRandom(2, 5);
+	demonGroup.resize(numberOfDemons);
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
 		demonGroup.push_back(demon);
 	};
 	
 	//add images to vector within an ofxThreadedImageLoader object 
-	numberOfImgs = 3;
+	numberOfImgs = 4;
 	images.resize(numberOfImgs);
 	for (int i = 0; i < numberOfImgs; i++) {
 		loader.loadFromDisk(images[i], "Image" + ofToString(i) + ".jpg");
@@ -50,9 +51,10 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {	
+	ofSetColor(255, 255, 255);
+	images[randomPicker].draw(0, 0);
+
 	for (int i = 0; i < demonGroup.size(); i++) {
-		ofSetColor(255, 255, 255);
-		images[randomPicker].draw(0, 0);
 		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
 		demonGroup[i].drawDemons();
 	}
@@ -62,20 +64,30 @@ void ofApp::draw() {
 void ofApp::keyPressed(int key) {
 	if (key == 'b') {
 		for (int i = 0; i < demonGroup.size(); i++) {
+			demonGroup.clear();
 			demonGroup[i].line.clear();
 			demonGroup[i].demonPoints.clear();
 			demonGroup[i].b_sp = true;
 
+			//Provides a random image at keypressed
 			randomPicker = ofRandom(0, numberOfImgs);
 			imgW = images[randomPicker].getWidth();
 			imgH = images[randomPicker].getHeight();
 			ofSetWindowShape(imgW, imgH);
 
-			//set demon color to a random within the demon color palette
+			//generate a new set of demons
+			numberOfDemons = ofRandom(2, 5);
+			demonGroup.resize(numberOfDemons);
+			for (int j = 0; j < numberOfDemons; j++) {
+				Demon demon;
+				demonGroup.push_back(demon);
+			};
+
+			//set demon color to a random color within the demon color palette
 			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
 
 			//spawn demons in random position on screen - ignore the - line.getArea() , i was trying to get it to stay within picture, 
-			//but then felt it was interesting when it sometimes spawned some of the demon body out of view 
+			//but then felt it was interesting when it sometimes spawned some of the demon body out of view, will delete later 
 			demonGroup[i].blobPositionX = ofRandom(0, (imgW - demonGroup[i].line.getArea()));
 			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
 

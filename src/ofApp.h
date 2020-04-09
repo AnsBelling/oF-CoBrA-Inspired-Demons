@@ -40,7 +40,7 @@ public:
 	void update();
 	void draw();
 	//my group of demons
-	vector<Demon> demonGroup;
+	vector <Demon> demonGroup;
 
 	int numberOfDemons;
 
