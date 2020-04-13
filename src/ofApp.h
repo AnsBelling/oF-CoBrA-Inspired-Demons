@@ -1,15 +1,15 @@
 #pragma once
 
 #include "ofMain.h"
-
 #include "ofxThreadedImageLoader.h"
+
 class Demon : public ofBaseApp {
 public:
 	
 	int blobPositionX, blobPositionY;
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;
-
+	
 	//set the centre point of the blob
 	ofVec3f centre;
 	//set distance variable so it can be used to only collect point at a specific range
@@ -41,7 +41,7 @@ public:
 	void draw();
 	//my group of demons
 	vector <Demon> demonGroup;
-
+	int time;
 	int numberOfDemons;
 
 	ofImage img;
