@@ -9,7 +9,7 @@ Archie is blob master.
 void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
-
+	time = ofGetElapsedTimeMillis();
 	//Generate a random number between 2 and 5 of demons and add to my vector of Demons.
 	numberOfDemons = ofRandom(2, 5);
 
@@ -49,22 +49,9 @@ void ofApp::update() {
 	for (int i = 0; i < demonGroup.size(); i++) {
 		demonGroup[i].blobpoints.clear();
 	}
-}
 
-//--------------------------------------------------------------
-void ofApp::draw() {
-	ofSetColor(255, 255, 255);
-	images[randomPicker].draw(0, 0);
-	//cout << demonGroup.size() << endl;
-	for (int i = 0; i < demonGroup.size(); i++) {
-		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
-		demonGroup[i].drawDemons();
-	}
-}
-
-
-void ofApp::keyPressed(int key) {
-	if (key == 'b') {
+	
+	if (ofGetElapsedTimeMillis() > time + 5000) {
 		for (int i = 0; i < demonGroup.size(); i++) {
 
 			demonGroup[i].line.clear();
@@ -95,9 +82,29 @@ void ofApp::keyPressed(int key) {
 			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
 
 
-			//img.grabScreen(0, 0, imgW, imgH);
-			//img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
 		}
+		time = ofGetElapsedTimeMillis();
+	}
+}
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+	ofSetColor(255, 255, 255);
+	images[randomPicker].draw(0, 0);
+	//cout << demonGroup.size() << endl;
+	for (int i = 0; i < demonGroup.size(); i++) {
+		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
+		demonGroup[i].drawDemons();
+	}
+}
+
+
+void ofApp::keyPressed(int key) {
+	if (key == 's') {
+
+		img.grabScreen(0, 0, imgW, imgH);
+		img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
+		
 	}
 }
 
