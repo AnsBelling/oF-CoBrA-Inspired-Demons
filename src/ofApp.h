@@ -1,5 +1,4 @@
 #pragma once
-
 #include "ofMain.h"
 #include "ofxThreadedImageLoader.h"
 
@@ -9,14 +8,13 @@ public:
 	int blobPositionX, blobPositionY;
 	vector<ofColor> demonColorPalette;
 	ofPoint eyeDot;
-	
+
 	//set the centre point of the blob
 	ofVec3f centre;
 	//set distance variable so it can be used to only collect point at a specific range
 	float dist;
 	//Demon Blob outline
 	ofPolyline line;
-	ofPolyline legLine;
 	//blob points takes the points within range of the centre and demon points is made up of a number of randomly selcted points from blob points
 	vector<ofVec3f> blobpoints, demonPoints;
 	//startpoint just used to write to demonpoints easier

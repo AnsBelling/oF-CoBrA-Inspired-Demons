@@ -1,25 +1,30 @@
 #include "ofApp.h"
 
 /*
+The system is working, however, the first round is triggered 5 seconds after its been succesfully built&run.
+
 Acknowledgements:
-Archie is blob master.
+I must give thanks Archie Hollyfield for his tenacity and helpfulness as he several times came to my aid when I couldn't get the system to work!
+Also, a thanks to Dr. Daniel Buzzo for facilitating and putting together such interesting and rewarding workshops, allowing us to explore
+different types of generative systems through our own personal creative practice - and also thanks for help with the code!
 */
 
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofSetBackgroundAuto(false);
 	ofBackground(0);
+
+	//Timer for triggering new generation of image
 	time = ofGetElapsedTimeMillis();
+
 	//Generate a random number between 2 and 5 of demons and add to my vector of Demons.
 	numberOfDemons = ofRandom(2, 5);
-
-	//demonGroup.resize(numberOfDemons);
-
 	for (int j = 0; j < numberOfDemons; j++) {
 		Demon demon;
 		demonGroup.push_back(demon);
 	};
-	cout << demonGroup.size() << endl;
+	//cout << demonGroup.size() << endl; 
+
 	//add images to vector within an ofxThreadedImageLoader object 
 	numberOfImgs = 4;
 	images.resize(numberOfImgs);
@@ -27,7 +32,7 @@ void ofApp::setup() {
 		loader.loadFromDisk(images[i], "Image" + ofToString(i) + ".jpg");
 	};
 
-	//random selection of images
+	//random selection of images and resize window from current image
 	randomPicker = ofRandom(0, numberOfImgs);
 	imgW = images[randomPicker].getWidth();
 	imgH = images[randomPicker].getHeight();
@@ -37,29 +42,22 @@ void ofApp::setup() {
 }
 //--------------------------------------------------------------
 void ofApp::update() {
-	/*//Make edges move randomly
-	for (auto &vert : line.getVertices()) {
-		vert.x += ofRandom(-1, 1);
-		vert.y += ofRandom(-1, 1);
-	}
-	//	line = line.getSmoothed(2);
-	*/
-
 	//clear the blobpoint vector
 	for (int i = 0; i < demonGroup.size(); i++) {
 		demonGroup[i].blobpoints.clear();
 	}
 
-	
+	//Every 5 seconds, generate a new image with daemons
 	if (ofGetElapsedTimeMillis() > time + 5000) {
+		//clear out the previous image and set bool to true so it generates a new
 		for (int i = 0; i < demonGroup.size(); i++) {
-
 			demonGroup[i].line.clear();
 			demonGroup[i].demonPoints.clear();
 			demonGroup[i].b_sp = true;
 		}
 		demonGroup.clear();
-		//Provides a random image at keypressed
+
+		//Generates image anew
 		randomPicker = ofRandom(0, numberOfImgs);
 		imgW = images[randomPicker].getWidth();
 		imgH = images[randomPicker].getHeight();
@@ -67,7 +65,6 @@ void ofApp::update() {
 
 		//generate a new set of demons
 		numberOfDemons = ofRandom(2, 5);
-		//demonGroup.resize(numberOfDemons);
 		for (int j = 0; j < numberOfDemons; j++) {
 			Demon demon;
 			demonGroup.push_back(demon);
@@ -76,10 +73,11 @@ void ofApp::update() {
 			//set demon color to a random color within the demon color palette
 			demonGroup[i].currentDemonColor = ofRandom(0, demonGroup[i].demonColorPalette.size());
 
-			//spawn demons in random position on screen - ignore the - line.getArea() , i was trying to get it to stay within picture, 
-			//but then felt it was interesting when it sometimes spawned some of the demon body out of view, will delete later 
-			demonGroup[i].blobPositionX = ofRandom(0, (imgW - demonGroup[i].line.getArea()));
-			demonGroup[i].blobPositionY = ofRandom(0, (imgH - demonGroup[i].line.getArea()));
+			//spawn demons in random position on screen between imgH and imgW 
+			//I initially had intended for them to only spawn within the screen width and length with no body outside edges
+			//but then I found it had a positive effect on the experience, seeing them peeping in from the edges 
+			demonGroup[i].blobPositionX = ofRandom(0, imgW);
+			demonGroup[i].blobPositionY = ofRandom(0, imgH);
 
 
 		}
@@ -89,9 +87,11 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
+	//sets color to white so it retains its normal colours and not the colours from the Pedersen color palette and then draws the image to screen
 	ofSetColor(255, 255, 255);
 	images[randomPicker].draw(0, 0);
 	//cout << demonGroup.size() << endl;
+	//goes through the vector of Demon objects and draws them with a random color from the Pedersen color palette
 	for (int i = 0; i < demonGroup.size(); i++) {
 		ofSetColor(demonGroup[i].demonColorPalette[demonGroup[i].currentDemonColor]);
 		demonGroup[i].drawDemons();
@@ -100,18 +100,23 @@ void ofApp::draw() {
 
 
 void ofApp::keyPressed(int key) {
+	/* // Was going to implement a save function, but then chose not to, as I just wanted to have continuous flow of transitory images 
+		//As I feel there is a quality in not being able to save them, the transitory quality of "gone and never will be again"
 	if (key == 's') {
 
 		img.grabScreen(0, 0, imgW, imgH);
 		img.save("myPic.jpg", OF_IMAGE_QUALITY_BEST);
 		
 	}
+	*/
 }
 
 void Demon::drawDemons() {
 	// A vector of all the points within a given distance of the centre point is stored then some points are picked at random. 
 	//These points are then used to draw the shapes.
+
 	ofPushMatrix();
+	//spawn demon on random blobPositions
 	ofTranslate(blobPositionX, blobPositionY);
 	int ratio = (ofGetWidth() + ofGetHeight()) / 2;
 	if (b_sp) {
@@ -169,27 +174,23 @@ void Demon::drawDemons() {
 			b_sp = false;
 		}
 	}
-	//draws a circle and the point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
+	//draws a  point index at each point, if the current point is greater in x and y or less in x and y use the point in the line
 	for (int i = 0; i < demonPoints.size(); i += 2) {
 		line.curveTo(demonPoints[i]);
-
-		//brush.updatePosition(demonPoints[i], 5);
-		//legLine.lineTo((int)ofRandom(0, demonPoints.size*());
+	
 	}
 
-	//EYES at the centre, silly really but I just wanted to see the diff between getCentroid2d() and the centre position but then I kind of liked how it looked
+	// I  wanted to see the difference between getCentroid2d() and the centre position and with that came the effect of the eyeballs looking in different directions,
+	// unintentional but I liked it and kept it
 	eyeDot.x = line.getCentroid2D().x;
 	eyeDot.y = line.getCentroid2D().y;
-	//int xOffset = centre.x - eyeDot.x;
-	//ofNoFill();
 	ofSetColor(255, 255, 255);
 	ofDrawCircle(eyeDot.x, eyeDot.y, 20);
 	ofFill();
 	ofSetColor(0);
 	ofDrawCircle(centre.x, centre.y, 10);
-	//
-
 	ofSetColor(demonColorPalette[currentDemonColor]);
+	
 	//draw the linedemon.
 	ofSetLineWidth(15);
 	line.draw();
@@ -204,11 +205,12 @@ Demon::Demon()
 	centre.x = 0;
 	centre.y = 0;
 	b_sp = true;
+	//size of demon
 	range = 75;
 	change = 25;
 	currentDemonColor = 0;
 
-	//Adding ofColor objects (colors extracted from CoBrA painting) to demon color palette	
+	//Adding ofColor objects (colors extracted from Pedersen's Modifikationer) to demon color palette	
 	ofColor demonBlue(69, 211, 222);
 	demonColorPalette.push_back(demonBlue);
 	ofColor demonRed(225, 37, 21);
